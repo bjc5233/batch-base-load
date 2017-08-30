@@ -7,10 +7,23 @@ load.bat是batch编程基础库，提供了很多内敛函数，方便调用，�
 * 调用方式[load.bat 0] -> 打印所有函数以及解释
 * 调用方式[load.bat 1] -> 罗列所有函数，上下箭头可以移动
 * 实际编程使用方式查看并执行demo.bat
+```batch
+@echo off
+call load.bat _strlen
+setlocal enabledelayedexpansion
+
+set str=123你好啊
+%_call% ("str len") %_strlen%
+echo [!str!]的字符长度: !len!
+pause>nul
+```
+## 其他
+其他batch项目中基本都会使用到load.bat，此项目中的load.bat保持最新
+
 
 ---
 ## 预览
-<div align=center><img src="https://github.com/bjc5233/batch-base-load/raw/master/resources/demo.png"/></div>
+<div align=center><img src="https://github.com/bjc5233/batch-base-load/raw/master/resources/demo.PNG"/></div>
 
 ---
 ## 函数列表
