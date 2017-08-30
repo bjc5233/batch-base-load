@@ -7,6 +7,7 @@ load.bat是batch编程基础库，提供了很多内敛函数，方便调用，�
 * 调用方式[load.bat 0] -> 打印所有函数以及解释
 * 调用方式[load.bat 1] -> 罗列所有函数，上下箭头可以移动
 * 实际编程使用方式查看并执行demo.bat
+* 以下是最简单的实例：
 ```batch
 @echo off
 call load.bat _strlen
