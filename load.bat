@@ -71,7 +71,7 @@ if "%2"=="" (
 pause>nul& goto :EOF
 
 :searchFunction
-call lib\loadE.bat CurS CKey
+call loadE.bat CurS CKey
 ::列出所有已经定义内敛函数\搜索包含指定字符串的内敛函数
 (call :_getLF)& (call :_call)& (call :_checkDepend)
 (%_call% ("CKey.exe") %_checkDepend%) || (echo 缺少CKey.exe& pause>nul& goto :EOF)
