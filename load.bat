@@ -73,8 +73,7 @@ pause>nul& goto :EOF
 :searchFunction
 call loadE.bat CurS CKey
 ::列出所有已经定义内敛函数\搜索包含指定字符串的内敛函数
-(call :_getLF)& (call :_call)& (call :_checkDepend)
-(%_call% ("CKey.exe") %_checkDepend%) || (echo 缺少CKey.exe& pause>nul& goto :EOF)
+(call :_getLF)& (call :_call)
 setlocal enabledelayedexpansion
 (for /f "delims=" %%i in (%~f0) do set curLine=%%i& if "!curLine:~0,2!"==":_" if "!curLine:~-1!" NEQ "_" echo !curLine:~1!)>>%temp%\functionList.tmp
 if "%2"=="" (for /f "delims=" %%i in (%temp%\functionList.tmp) do set /a functionIndex+=1& set function_!functionIndex!=%%i& set function_!functionIndex!=%%i) else (title [%2]& for /f "skip=2 delims=" %%i in ('find /i "%2" %temp%\functionList.tmp') do set /a functionIndex+=1& set function_!functionIndex!=%%i)
@@ -565,7 +564,10 @@ set "_showHR=do setlocal enabledelayedexpansion& (if "%%1" EQU "" (set hrElement
 
 
 
-
+:_getMinNum
+::取指定范围内的随机数
+::IN[数字1]    IN[数字2]    OUT[最小数]
+set "_getMinNum=do if %%1 GTR %%2 (set /a %%3=%%2) else (set /a %%3=%%1)"& goto :EOF
 
 
 
