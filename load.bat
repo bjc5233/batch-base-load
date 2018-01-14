@@ -572,3 +572,8 @@ set "_getMinNum=do if %%1 GTR %%2 (set /a %%3=%%2) else (set /a %%3=%%1)"& goto 
 
 
 
+:_getConsoleCurColor
+::获取cmd当前颜色
+::OUT[cmd当前颜色]
+set _getConsoleCurColorTemp=%%SystemRoot%%
+set "_getConsoleCurColor=do setlocal enabledelayedexpansion& for /f "skip=2 tokens=2* delims= " %%i in ('reg query "HKEY_CURRENT_USER\Console\%%_getConsoleCurColorTemp%%_system32_cmd.exe" /v ScreenColors') do endlocal& set %%1=%%j"& goto :EOF
