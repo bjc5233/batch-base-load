@@ -59,7 +59,6 @@ pause>nul
 |_getBS|得到退格符, 导入之后使用约定变量Tab, 调用者开启延迟变量使用[ \ %BS%], 未开启延迟变量使用[%BS%]|
 |_speak|计算机speak文字  会在%temp%目录生成tool_speak.vbs<br>IN[文字变量名]|
 |_getScreenSize|获取显示器屏幕大小<br>OUT[宽度]    OUT[高度]|
-|_getDeskWallpaperPath|获取桌面壁纸路径<br>OUT[桌面壁纸路径]|
 |_roundFloat|四舍五入<br>IN[原始浮点数字字符串]    IN[精确小数位数]    OUT[处理后浮点数字字符串]|
 |_infiniteLoopPause|无限pause>nul, 一般用于bat结尾, 用户只能手动关闭窗口|
 |_infiniteLoopSome|无限处理用户指定命令,    使用双引号包围每条命令, 命令之间以空格分隔          set some="echo ok" "pause" "set /a count+=1" "echo !count!"& %_call% ("some") %_infiniteLoopSome%<br>IN[指定命令字符串变量名]|
@@ -81,13 +80,13 @@ pause>nul
 |_playMusicMini|指定次数播放音乐集, 需要工具gplay.exe支持<br>IN[musicPaths][路径有空格加双引号][多个路径使用空格间隔]    IN[times][不写或者0表示循环]|
 |_playMusic|指定播放模式播放音乐集, 需要gplay.exe支持<br>IN[musicPaths][路径有空格加双引号][多个路径使用空格间隔]    IN[mode][单曲播放0\单曲循环1\顺序播放2\循环播放3\随机播放4]|
 |_setFontSize|修改cmd窗口字体大小   目前只支持[点阵字体]<br>    注意:注册表中FontSize字段[高四位为字高, 低四位为字宽], 如00100008，即字体宽x高=16进制08Hx10H=10进制8×16<br>IN[字体宽x高][8x16]|
+|_getDeskWallpaperPath|获取桌面壁纸路径<br>目前常见的更改桌面的方法<br>1. 手动图片右键-设置为桌面背景<br>2. 修改[HKEY_CURRENT_USER\Control Panel\Desktop\WallPaper]值, 刷新注册表[UpdatePerUserSystemParameters], 注意此方法有时不能生效<br>3. ahk\ps1调用DLL方法DllCall("SystemParametersInfo", UInt, 0x14, UInt, 0, Str, imgPath, UInt, 2), 注意此方法不会修改注册表[WallPaper]值, 代码应该主动设值<br>4. vbs获取\点击图片右键[设置为桌面背景], 与1相似<br>OUT[桌面壁纸路径]|
 |_setWallpaper|设置桌面壁纸  会在%temp%目录生成tool_setWallpaper.vbs<br>IN[壁纸路径变量名]|
 |_readConfig|读取指定配置文件指定key值      从配置文件中读出键为key的值, 如果value参数存在, 将值设置到value中, 否则设置到key中<br>    注意:for语句读取文件时默认跳过;开头的行, 因此;开头的行可以作为注释<br>IN[配置文件路径]    IN[key]    {OUT[value变量名]}|
 |_readConfigMulti|读取指定配置文件指定的多个key值      从配置文件中读出键为key的值, 如果value参数存在, 将值设置到value中, 否则设置到key中<br>    注意:for语句读取文件时默认跳过;开头的行, 因此;开头的行可以作为注释<br>IN[配置文件路径]    IN-OUT[keys变量名][空格分隔key]|
 |_writeConfig|读取指定配置文件指定key值      从配置文件中寻找键为key的行, 如果value参数存在, 将值设为value, 否则读取key变量值<br>    注意:for语句读取文件时默认跳过;开头的行, 因此;开头的行可以作为注释<br>IN[配置文件路径]    IN[key变量名]    {IN[value]}|
 |_writeConfig2|IN[配置文件路径]    IN[key变量名]    {IN[value变量名]}|
 |_writeConfigMulti|将指定的多个key值写入配置文件<br>    注意:for语句读取文件时默认跳过;开头的行, 因此;开头的行可以作为注释<br>IN[配置文件路径]    IN[keys变量名][空格分隔key]|
-|_readConfig|读取指定配置文件指定key值      从配置文件中读出键为key的值, 如果value参数存在, 将值设置到value中, 否则设置到key中<br>    注意:for语句读取文件时默认跳过;开头的行, 因此;开头的行可以作为注释<br>IN[配置文件路径]    IN[key]    {OUT[value变量名]}|
 |_getDate|取当前的年月日<br>OUT[年-月-日] {IN[separator连接符], 默认值为空}|
 |_getYear|取当前的年<br>OUT[年]|
 |_getMonth|取当前的月<br>OUT[月] {IN[needRemoveZeroPrefix]: 0否 1是}<br>set "_getMonth=do setlocal enabledelayedexpansion& (if "0" EQU "0" if "%%2" EQU "1" (set monthTemp=8) else (set monthTemp=08))& for %%i in () do endlocal& set %%1=%%i"& goto :EOF|

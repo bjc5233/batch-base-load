@@ -307,18 +307,10 @@ set Tab=	& goto :EOF
 set "_speak=do setlocal enabledelayedexpansion& (if not exist %temp%\tool_speak.vbs echo CreateObject^("SAPI.SpVoice"^).Speak^(Wscript.Arguments^(0^)^)>%temp%\tool_speak.vbs)& for /f "delims=" %%i in ("!%%1!") do call %temp%\tool_speak.vbs "%%~i""& goto :EOF
 
 
-
 :_getScreenSize
 ::»ñÈ¡ÏÔÊ¾Æ÷ÆÁÄ»´óĞ¡
 ::OUT[¿í¶È]    OUT[¸ß¶È]
 set "_getScreenSize=do for /f "tokens=1,2 delims==" %%i in ('wmic DESKTOPMONITOR where Status^='ok' get ScreenWidth^,ScreenHeight /VALUE') do (if "%%i"=="ScreenWidth" set %%1=%%j)& (if "%%i"=="ScreenHeight" set %%2=%%j)"& goto :EOF
-
-
-:_getDeskWallpaperPath
-::»ñÈ¡×ÀÃæ±ÚÖ½Â·¾¶
-::OUT[×ÀÃæ±ÚÖ½Â·¾¶]
-set "_getDeskWallpaperPath=do for /f "skip=2 tokens=2* delims= " %%i in ('reg query "HKEY_CURRENT_USER\Control Panel\Desktop" /v WallPaper') do set %%1=%%j"& goto :EOF
-
 
 
 :_roundFloat
@@ -477,10 +469,21 @@ set "_setFontSize=do setlocal enabledelayedexpansion& set fontSize=& (if %%1==3x
 
 
 
-:_setWallpaper
+:_getDeskWallpaperPath
+::»ñÈ¡×ÀÃæ±ÚÖ½Â·¾¶
+::Ä¿Ç°³£¼ûµÄ¸ü¸Ä×ÀÃæµÄ·½·¨
+::    1. ÊÖ¶¯Í¼Æ¬ÓÒ¼ü-ÉèÖÃÎª×ÀÃæ±³¾°
+::    2. ĞŞ¸Ä[HKEY_CURRENT_USER\Control Panel\Desktop\WallPaper]Öµ, Ë¢ĞÂ×¢²á±í[UpdatePerUserSystemParameters], ×¢Òâ´Ë·½·¨ÓĞÊ±²»ÄÜÉúĞ§
+::    3. ahk\ps1µ÷ÓÃDLL·½·¨DllCall("SystemParametersInfo", UInt, 0x14, UInt, 0, Str, imgPath, UInt, 2), ×¢Òâ´Ë·½·¨²»»áĞŞ¸Ä×¢²á±í[WallPaper]Öµ, ´úÂëÓ¦¸ÃÖ÷¶¯ÉèÖµ
+::    4. vbs»ñÈ¡\µã»÷Í¼Æ¬ÓÒ¼ü[ÉèÖÃÎª×ÀÃæ±³¾°], Óë1ÏàËÆ
+::OUT[×ÀÃæ±ÚÖ½Â·¾¶]
+set "_getDeskWallpaperPath=do for /f "skip=2 tokens=2* delims= " %%i in ('reg query "HKEY_CURRENT_USER\Control Panel\Desktop" /v WallPaper') do set %%1=%%j"& goto :EOF
+
+
+:_setDeskWallpaper
 ::ÉèÖÃ×ÀÃæ±ÚÖ½  »áÔÚ%temp%Ä¿Â¼Éú³Étool_setWallpaper.vbs
 ::IN[±ÚÖ½Â·¾¶±äÁ¿Ãû]
-set "_setWallpaper=do setlocal enabledelayedexpansion& (if not exist %temp%\tool_setWallpaper.vbs (echo Dim shApp, picFile, items& echo Set shApp = CreateObject^("Shell.Application"^)& echo Set picFile = CreateObject^("Scripting.FileSystemObject"^).GetFile^(Wscript.Arguments^(0^)^)& echo Set items = shApp.NameSpace^(picFile.ParentFolder.Path^).ParseName^(picFile.Name^).Verbs& echo For Each item In items& echo   If item.Name = "ÉèÖÃÎª×ÀÃæ±³¾°(^&B)" Then item.DoIt& echo Next& echo WScript.Sleep 3000)>%temp%\tool_setWallpaper.vbs)& for /f "delims=" %%i in ("!%%1!") do call %temp%\tool_setWallpaper.vbs "%%~i""& goto :EOF
+set "_setDeskWallpaper=do setlocal enabledelayedexpansion& (if not exist %temp%\tool_setDeskWallpaper.vbs (echo Dim shApp, picFile, items& echo Set shApp = CreateObject^("Shell.Application"^)& echo Set picFile = CreateObject^("Scripting.FileSystemObject"^).GetFile^(Wscript.Arguments^(0^)^)& echo Set items = shApp.NameSpace^(picFile.ParentFolder.Path^).ParseName^(picFile.Name^).Verbs& echo For Each item In items& echo   If item.Name = "ÉèÖÃÎª×ÀÃæ±³¾°(^&B)" Then item.DoIt& echo Next& echo WScript.Sleep 3000)>%temp%\tool_setDeskWallpaper.vbs)& for /f "delims=" %%i in ("!%%1!") do call %temp%\tool_setDeskWallpaper.vbs "%%~i""& goto :EOF
 
 
 
@@ -512,15 +515,6 @@ set "_writeConfig2=do setlocal enabledelayedexpansion& (for /f "eol= delims=" %
 ::    ×¢Òâ:forÓï¾ä¶ÁÈ¡ÎÄ¼şÊ±Ä¬ÈÏÌø¹ı;¿ªÍ·µÄĞĞ, Òò´Ë;¿ªÍ·µÄĞĞ¿ÉÒÔ×÷Îª×¢ÊÍ
 ::IN[ÅäÖÃÎÄ¼şÂ·¾¶]    IN[keys±äÁ¿Ãû][¿Õ¸ñ·Ö¸ôkey]
 set "_writeConfigMulti=do setlocal enabledelayedexpansion& (for /f "eol= delims=" %%i in (%%1) do set line=%%i& if "!line:~0,1!"==";" (echo %%i) else (for /f "tokens=1* delims==" %%j in ("!line!") do (set flag=0& (for %%k in (!%%2!) do if %%j==%%k set flag=1& echo %%j=!%%k!)& if !flag!==0 echo %%i)))>>%temp%\config.tmp& (copy /y %temp%\config.tmp %%1>nul)& (del /q %temp%\config.tmp)& endlocal"& goto :EOF
-
-
-
-
-:_readConfig
-::¶ÁÈ¡Ö¸¶¨ÅäÖÃÎÄ¼şÖ¸¶¨keyÖµ      ´ÓÅäÖÃÎÄ¼şÖĞ¶Á³ö¼üÎªkeyµÄÖµ, Èç¹ûvalue²ÎÊı´æÔÚ, ½«ÖµÉèÖÃµ½valueÖĞ, ·ñÔòÉèÖÃµ½keyÖĞ
-::    ×¢Òâ:forÓï¾ä¶ÁÈ¡ÎÄ¼şÊ±Ä¬ÈÏÌø¹ı;¿ªÍ·µÄĞĞ, Òò´Ë;¿ªÍ·µÄĞĞ¿ÉÒÔ×÷Îª×¢ÊÍ
-::IN[ÅäÖÃÎÄ¼şÂ·¾¶]    IN[key]    {OUT[value±äÁ¿Ãû]}
-set "_readConfig=do setlocal enabledelayedexpansion& for /f "tokens=1* delims==" %%i in (%%1) do if %%i==%%2 endlocal& if "%%3" EQU "" (set "%%2=%%j") else (set "%%3=%%j")"& goto :EOF
 
 
 
